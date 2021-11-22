@@ -5,11 +5,11 @@ on:
     workflow_dispatch:
     
 env:              
-  ROM_URL: 'https://netix.dl.sourceforge.net/project/ancientrom/RMX1921/AncientOS-S-Alpha-Society-v6.0-RMX1921-Iron-20211027-1257-GApps.zip'
+  ROM_URL: 'https://liquidtelecom.dl.sourceforge.net/project/anuj-builds/CherishOS/Cherish-OS-v3.1-20211104-0406-RMX1921-OFFICIAL-Vanilla.zip'
   ZIP_NAME: 'update.zip'
   OS_TYPE: 'Pixel'
   BUILD_TYPE: 'ab'
-  REPACK_NAME: 'Ancient-6-S-P-RK137SGSI'
+  REPACK_NAME: 'C-S-P-RK137SGSI'
   VERSION: '12'
   upload _SourceForge: 'true'
   upload_WeTransfer: 'false'
