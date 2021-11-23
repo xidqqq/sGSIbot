@@ -1,15 +1,29 @@
 name: SGSI_Build
 
 on:
-  push:
   workflow_dispatch:
+    inputs:
+      ROM_URL:
+        description: 'ROM_URL'
+        required: true
+        default: 'https://mirror.orkunergun.workers.dev/MyOS-R-sakura-generic-20210620.zip'
+      ZIP_NAME:
+        description: 'ZIP_NAME'
+        required: true
+        default: 'update.zip'
+      OS_TYPE:
+        description: 'OS_TYPE'
+        required: true
+        default: 'Generic'
+      SGSI_TYPE:
+        description: 'SGSI_TYPE(AB, A, or BOTH)'
+        required: true
+        default: 'AB'
+      REPACK_NAME:
+        description: 'REPACK_NAME'
+        required: true
+        default: 'MyOS_SGSI.zip'
 
-env:              
-  ROM_URL: 'https://iweb.dl.sourceforge.net/project/ancientrom/RMX1921/AncientOS-R-Society-v5.6-RMX1921-Iron-20211021-0952-Vanilla.zip'
-  ZIP_NAME: 'update.zip'
-  OS_TYPE: 'Generic'
-  BUILD_TYPE: 'ab'
-  REPACK_NAME: 'Ancient-5.6-11-RK137SGSI'
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -20,7 +34,7 @@ jobs:
 
       - name: Get variable configuration...
         run: |
-          echo "BUILD_TIME=$(date +%s | md5sum | awk '{print substr($1,1,10)}')" >> $GITHUB_ENV ; echo "$REPACK_NAME"
+          echo "BUILD_TIME=$(date +%s | md5sum | awk '{print substr($1,1,10)}')" >> $GITHUB_ENV
 
       - name: Clean up the environment‌‌...
         run: |
@@ -30,65 +44,69 @@ jobs:
           sudo -E apt-get update
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get clean
-          sudo apt-get install -y git unzip curl expect
           df -h
+
+      - name: Configuration Environment‌‌...
+        run: |
+          sudo apt-get install -y git wget git zip unzip curl axel expect
 
       - name: Get the SGSI tool‌‌...
         run: |
-          git clone --recurse-submodules https://github.com/xiaoxindada/SGSI-build-tool.git -b 11 $GITHUB_WORKSPACE/SGSI-build-tool
+          git clone --recurse-submodules https://github.com/xiaoxindada/SGSI-build-tool.git -b 11 $GITHUB_WORKSPACE/Tool-SGSI-build
           
-      - name: Download Firmware...
+      - name: Download ROM‌‌...
         run: |
-          cd $GITHUB_WORKSPACE/SGSI-build-tool
+          cd $GITHUB_WORKSPACE/Tool-SGSI-build
           mkdir ./tmp
-          aria2c -x16 -j$(nproc) -U "Mozilla/5.0" -d "$GITHUB_WORKSPACE/SGSI-build-tool/tmp" -o $ZIP_NAME $ROM_URL || wget -U "Mozilla/5.0" $ROM_URL -O "$GITHUB_WORKSPACE/SGSI-build-tool/tmp/$ZIP_NAME"
-          echo "zip_file: $(ls "$GITHUB_WORKSPACE/SGSI-build-tool/tmp/")"
+          wget -U "Mozilla/5.0" ${{ github.event.inputs.ROM_URL }} -O "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}"
+          echo "zip_file: $(ls "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/")"
 
       - name: Configuration tool environment...
         run: |
-          sudo sed -i 's/USE_MIRROR_FOR_PIP\=true/USE_MIRROR_FOR_PIP\=false/' $GITHUB_WORKSPACE/SGSI-build-tool/setup.sh
-          sudo bash $GITHUB_WORKSPACE/SGSI-build-tool/setup.sh
+          sudo sed -i 's/USE_MIRROR_FOR_PIP\=true/USE_MIRROR_FOR_PIP\=false/' $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
+          sudo bash $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
           sudo apt-get -y --purge remove "adoptopenjdk-11-hotspot"
           java -version
 
       - name: Make AB type GSI‌‌...
+        if: ${{ github.event.inputs.SGSI_TYPE }} == 'AB' || ${{ github.event.inputs.SGSI_TYPE }} == 'BOTH'
         run: |
-          sudo bash $GITHUB_WORKSPACE/SGSI-build-tool/make.sh AB << EOF
-          $ZIP_NAME
+          sudo bash $GITHUB_WORKSPACE/Tool-SGSI-build/make.sh AB << EOF
+          ${{ github.event.inputs.ZIP_NAME }}
           y
           y
-          $BUILD_TYPE
-          y
+          ${{ github.event.inputs.OS_TYPE }}
+          y  
 
       - name: Repack output file ...
         run: |            
-             sudo chmod -R 777 $GITHUB_WORKSPACE/SGSI-build-tool/SGSI
-             cd $GITHUB_WORKSPACE/SGSI-build-tool/SGSI
-             ls
-             sudo chmod -R 777 system.img
-             gzip -cfStv9 *img > $REPACK_NAME.img.gz
-
+          sudo chmod -R 777 $GITHUB_WORKSPACE/Tool-SGSI-build/SGSI
+          cd $GITHUB_WORKSPACE/Tool-SGSI-build/SGSI
+          ls
+          sudo chmod -R 777 system.img
+          gzip -cfStv9 *img > MyOS-AB-11-20211123-RK137SGSI.img.gz
+            
       - name: Upload SGSI to SourceForge
         continue-on-error: true
         run: |
-             cd $GITHUB_WORKSPACE/SGSI-build-tool/SGSI
-             ls
-             expect -c "
-             spawn sftp ${{ secrets.SFUSER }}@frs.sourceforge.net
-             expect \"yes/no\"
-             send \"yes\r\"
-             expect \"Password\"        
-             send \"${{ secrets.SFPASS }}\r\"
-             expect \"sftp> \"
-             send \"cd ${{ secrets.SFDIR }}\r\"
-             set timeout -1
-             send \"mkdir $REPACK_NAME\r\"
-             expect \"sftp> \"
-             send \"cd $REPACK_NAME\r\"
-             set timeout -1
-             send \"put *\r\"
-             expect \"Uploading\"
-             expect \"100%\"
-             expect \"sftp>\"
-             send \"bye\r\"
-             interact"
+          cd $GITHUB_WORKSPACE/Tool-SGSI-build/SGSI
+          ls
+          expect -c "
+          spawn sftp ${{ secrets.SFUSER }}@frs.sourceforge.net
+          expect \"yes/no\"
+          send \"yes\r\"
+          expect \"Password\"        
+          send \"${{ secrets.SFPASS }}\r\"
+          expect \"sftp> \"
+          send \"cd ${{ secrets.SFDIR }}\r\"
+          set timeout -1
+          send \"mkdir MyOS-11-RK137SGSI\r\"
+          expect \"sftp> \"
+          send \"cd MyOS-11-RK137SGSI\r\"
+          set timeout -1
+          send \"put *\r\"
+          expect \"Uploading\"
+          expect \"100%\"
+          expect \"sftp>\"
+          send \"bye\r\"
+          interact"
