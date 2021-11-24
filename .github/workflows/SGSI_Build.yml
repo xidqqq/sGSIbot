@@ -1,6 +1,7 @@
 name: SGSI_Build
 
-on
+on:
+  push:
   workflow_dispatch:
     inputs:
       ROM_URL:
