@@ -1,13 +1,12 @@
 name: SGSI_Build
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       ROM_URL:
         description: 'ROM_URL'
         required: true
-        default: 'https://udomain.dl.sourceforge.net/project/alone0316/Corvus/13_11_21/Corvus_v17.0-Vanguard-mido-11112021-UNofficial-0612.zip'
+        default: 'https://repo.mirrorbot69.workers.dev/0:/miui_COURBETGlobal_V12.5.8.0.RKQMIXM_d3268afe4e_11.0.zip'
       ZIP_NAME:
         description: 'ZIP_NAME'
         required: true
@@ -15,7 +14,7 @@ on:
       OS_TYPE:
         description: 'OS_TYPE'
         required: true
-        default: 'Generic'
+        default: 'MIUI'
       SGSI_TYPE:
         description: 'SGSI_TYPE(AB, A, or BOTH)'
         required: true
@@ -23,7 +22,9 @@ on:
       REPACK_NAME:
         description: 'REPACK_NAME'
         required: true
-        default: 'CorvusOS-17-11_RK137SGSI.zip'
+        default: 'MIUI-12.5.8-AB-11-20211213-RK137SGSI.img.gz'
+env:              
+  DIR: ${{ github.event.inputs.REPACK_NAME }}
 
 jobs:
   build:
@@ -35,7 +36,7 @@ jobs:
 
       - name: Get variable configuration...
         run: |
-          echo "BUILD_TIME=$(date +%s | md5sum | awk '{print substr($1,1,10)}')" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date +%s | md5sum | awk '{print substr($1,1,10)}')" >> $GITHUB_ENV ; echo "$DIR"
 
       - name: Clean up the environment‌‌...
         run: |
@@ -85,8 +86,11 @@ jobs:
           cd $GITHUB_WORKSPACE/Tool-SGSI-build/SGSI
           ls
           sudo chmod -R 777 system.img
-          gzip -cfStv9 *img > CorvusOS-17-AB-11-20211124-RK137SGSI.img.gz
-            
+          gzip -fqt9 *img > ${{ github.event.inputs.REPACK_NAME }}
+         
+      - name: Repack output file ...
+        run: cat $GITHUB_WORKSPACE/Tool-SGSI-build/SGSI/build_info.txt   
+   
       - name: Upload SGSI to SourceForge
         continue-on-error: true
         run: |
@@ -101,9 +105,9 @@ jobs:
           expect \"sftp> \"
           send \"cd ${{ secrets.SFDIR }}\r\"
           set timeout -1
-          send \"mkdir CorvusOS-11-RK137SGSI\r\"
+          send \"mkdir $DIR\r\"
           expect \"sftp> \"
-          send \"cd CorvusOS-11-RK137SGSI\r\"
+          send \"cd $DIR\r\"
           set timeout -1
           send \"put *\r\"
           expect \"Uploading\"
