@@ -1,4 +1,4 @@
-name: SGSI_Build
+name: SGSI_Build_11
 
 on:
   workflow_dispatch:
