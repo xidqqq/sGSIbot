@@ -19,12 +19,10 @@ on:
         description: 'SGSI_TYPE(AB, A, or BOTH)'
         required: true
         default: 'AB'
-      REPACK_NAME:
-        description: 'REPACK_NAME'
-        required: true
-        default: 'MIUI-12.5.8-AB-11-20211213-RK137SGSI.img.gz'
-env:              
-  DIR: ${{ github.event.inputs.REPACK_NAME }}
+
+env: 
+  DIR : MIUI-12.5.8
+  REPACK_NAME : MIUI-12.5.8-AB-11-20211213-RK137SGSI
 
 jobs:
   build:
@@ -54,7 +52,7 @@ jobs:
 
       - name: Get the SGSI tool‌‌...
         run: |
-          git clone --recurse-submodules https://github.com/xiaoxindada/SGSI-build-tool.git -b 11 $GITHUB_WORKSPACE/Tool-SGSI-build
+          git clone --recurse-submodules https://github.com/rahulkhatri137/SGSI-build-tool.git -b 11 $GITHUB_WORKSPACE/Tool-SGSI-build
           
       - name: Download ROM‌‌...
         run: |
@@ -86,9 +84,9 @@ jobs:
           cd $GITHUB_WORKSPACE/Tool-SGSI-build/SGSI
           ls
           sudo chmod -R 777 system.img
-          gzip -fqt9 *img > ${{ github.event.inputs.REPACK_NAME }}
+          gzip -fqt9 *img > $REPACK_NAME ; rm -rf *.img
          
-      - name: Repack output file ...
+      - name: Output Info
         run: cat $GITHUB_WORKSPACE/Tool-SGSI-build/SGSI/build_info.txt   
    
       - name: Upload SGSI to SourceForge
