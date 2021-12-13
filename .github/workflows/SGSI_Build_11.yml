@@ -1,6 +1,7 @@
 name: SGSI_Build
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       ROM_URL:
@@ -34,7 +35,7 @@ jobs:
 
       - name: Get variable configuration...
         run: |
-          echo "BUILD_TIME=$(date +%s | md5sum | awk '{print substr($1,1,10)}')" >> $GITHUB_ENV ; echo "$DIR"
+          echo "BUILD_TIME=$(date +%s | md5sum | awk '{print substr($1,1,10)}')" >> $GITHUB_ENV
 
       - name: Clean up the environment‌‌...
         run: |
