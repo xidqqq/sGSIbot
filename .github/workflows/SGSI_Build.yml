@@ -5,11 +5,11 @@ on:
     workflow_dispatch:
     
 env:              
-  ROM_URL: 'https://liquidtelecom.dl.sourceforge.net/project/anuj-builds/CherishOS/Cherish-OS-v3.1-20211104-0406-RMX1921-OFFICIAL-Vanilla.zip'
+  ROM_URL: 'https://rehans.harshtutorialdrive.workers.dev/0://DerpFest-12-Official-Shion-RMX1921-20211209.zip'
   ZIP_NAME: 'update.zip'
-  OS_TYPE: 'Pixel'
+  OS_TYPE: 'Generic'
   BUILD_TYPE: 'ab'
-  REPACK_NAME: 'C-S-P-RK137SGSI'
+  REPACK_NAME: 'Derp-S-t-RK137SGSI'
   VERSION: '12'
   upload _SourceForge: 'true'
   upload_WeTransfer: 'false'
