@@ -7,7 +7,7 @@ on:
       ROM_URL:
         description: 'ROM_URL'
         required: true
-        default: 'https://repo.mirrorbot69.workers.dev/0:/miui_COURBETGlobal_V12.5.8.0.RKQMIXM_d3268afe4e_11.0.zip'
+        default: 'https://bigota.d.miui.com/V12.5.9.0.RKFMIXM/miui_SWEETGlobal_V12.5.9.0.RKFMIXM_9a9a09a8de_11.0.zip'
       ZIP_NAME:
         description: 'ZIP_NAME'
         required: true
@@ -22,8 +22,8 @@ on:
         default: 'AB'
 
 env: 
-  DIR : MIUI-12.5.8
-  REPACK_NAME : MIUI-12.5.8-AB-11-20211213-RK137SGSI
+  DIR : MIUI-12.5.9
+  REPACK_NAME : MIUI-12.5.9-AB-11-20211224-RK137SGSI
 
 jobs:
   build:
