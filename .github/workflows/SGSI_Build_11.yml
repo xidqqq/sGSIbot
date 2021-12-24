@@ -86,7 +86,7 @@ jobs:
           cd $GITHUB_WORKSPACE/Tool-SGSI-build/SGSI
           ls
           sudo chmod -R 777 system.img
-          gzip -fqt9 *img > $REPACK_NAME ; rm -rf *.img
+          gzip -fqt9 *img > $REPACK_NAME.img.gz ; rm -rf *.img
          
       - name: Output Info
         run: cat $GITHUB_WORKSPACE/Tool-SGSI-build/SGSI/build_info.txt   
