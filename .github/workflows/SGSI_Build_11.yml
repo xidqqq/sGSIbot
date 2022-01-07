@@ -6,7 +6,7 @@ on:
       ROM_URL:
         description: 'ROM_URL'
         required: true
-        default: 'https://rehans.harshtutorialdrive.workers.dev/0://Havoc-OS-v4.11-20211121-RMX1805-Official.zip'
+        default: 'https://rehans.harshtutorialdrive.workers.dev/0://Corvus_v17.0-Vanguard-sanders-31102021-Official-1609.zip'
       ZIP_NAME:
         description: 'ZIP_NAME'
         required: true
@@ -21,8 +21,8 @@ on:
         default: 'AB'
 
 env: 
-  DIR : Havoc
-  REPACK_NAME : Havoc-AB-11-20211224-RK137SGSI
+  DIR : Corvus-t
+  REPACK_NAME : Corvus-test-RK137SGSI
 
 jobs:
   build:
