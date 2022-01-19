@@ -48,7 +48,11 @@ jobs:
          if: env.BUILD_TYPE == 'AB' || env.BUILD_TYPE == 'ab'
          run: |
             cd $GITHUB_WORKSPACE/SGSI-build-tool/fixbug/light_fix ; aria2c https://rehans.harshtutorialdrive.workers.dev/0://services.jar
-            sudo bash brightness_fix.sh ; cp -fr *jar.out ../../output/
+            sudo bash brightness_fix.sh
+            dist="$(find ./services.jar.out/ -type d -name 'dist')"
+            if [ ! $dist = "" ];then
+            cp -frp $dist/services.jar ../../output/
+            fi
 
        - name: Building A-only DEVICES SGSI...
          if: env.BUILD_TYPE == 'a-only'
