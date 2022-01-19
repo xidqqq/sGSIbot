@@ -25,30 +25,18 @@ jobs:
        
        - name: Clean Up
          run: |       
-           docker rmi `docker images -q`
-           sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
-           sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* php*
            sudo -E apt-get update
-           sudo -E apt-get -y autoremove --purge
            sudo -E apt-get clean
            sudo apt install expect -y
            
        - name: Setting up the SPICES
          run: |
             sudo apt-get install -y git wget unzip curl
-            df -h
 
        - name: Cloning...
          run: |
-             git clone https://github.com/rahulkhatri137/SGSI-build-tool.git -b 12 $GITHUB_WORKSPACE/SGSI-build-tool
+             git clone https://github.com/rahulkhatri137/SGSI-build-tool.git -b 12 $GITHUB_WORKSPACE/SGSI-build-tool ; cd $GITHUB_WORKSPACE/SGSI-build-tool ; mkdir output 
            
-       - name: Download Firmware...
-         run: |
-            cd $GITHUB_WORKSPACE/SGSI-build-tool
-            mkdir ./tmp
-            aria2c -x16 -j$(nproc) -U "Mozilla/5.0" -d "$GITHUB_WORKSPACE/SGSI-build-tool/tmp" -o $ZIP_NAME $ROM_URL || wget -U "Mozilla/5.0" $ROM_URL -O "$GITHUB_WORKSPACE/SGSI-build-tool/tmp/$ZIP_NAME"
-            echo "zip_file: $(ls "$GITHUB_WORKSPACE/SGSI-build-tool/tmp/")"
-            
        - name: Setup Tool Utils...
          run: |
             sudo sed -i 's/USE_MIRROR_FOR_PIP\=true/USE_MIRROR_FOR_PIP\=false/' $GITHUB_WORKSPACE/SGSI-build-tool/setup.sh
@@ -59,21 +47,13 @@ jobs:
        - name: Building AB DEVICES SGSI...
          if: env.BUILD_TYPE == 'AB' || env.BUILD_TYPE == 'ab'
          run: |
-            sudo bash $GITHUB_WORKSPACE/SGSI-build-tool/make.sh --AB $OS_TYPE $ZIP_NAME --fix-bug
+            cd $GITHUB_WORKSPACE/SGSI-build-tool/fixbug/light_fix ; aria2c https://rehans.harshtutorialdrive.workers.dev/0://services.jar
+            sudo bash brightness_fix.sh ; mv *jar.out ../../output/
 
        - name: Building A-only DEVICES SGSI...
          if: env.BUILD_TYPE == 'a-only'
          run: |
             sudo bash $GITHUB_WORKSPACE/SGSI-build-tool/make.sh a $OS_TYPE $ZIP_NAME --fix-bug     
-
-       - name: Repack output file ...
-         run: |            
-             sudo chmod -R 777 $GITHUB_WORKSPACE/SGSI-build-tool/output
-             cd $GITHUB_WORKSPACE/SGSI-build-tool/output
-             ls
-             sudo chmod -R 777 system.img
-             gzip -cfStv9 *img > $REPACK_NAME.img.gz
-             rm -rf system.img ; ls
 
        - name: Upload SGSI to SourceForge
          continue-on-error: true
@@ -88,10 +68,6 @@ jobs:
              send \"${{ secrets.SFPASS }}\r\"
              expect \"sftp> \"
              send \"cd ${{ secrets.SFDIR }}\r\"
-             set timeout -1
-             send \"mkdir $REPACK_NAME\r\"
-             expect \"sftp> \"
-             send \"cd $REPACK_NAME\r\"
              set timeout -1
              send \"put *\r\"
              expect \"Uploading\"
