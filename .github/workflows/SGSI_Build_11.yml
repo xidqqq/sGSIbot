@@ -6,11 +6,11 @@ on:
       ROM_URL: 
         description: 'ROM_URL'
         required: true
-        default: ' https://downloads.sourceforge.net/project/project-elixir/twelve/whyred/ProjectElixir_1.2_whyred-12.0-20211229-1811-OFFICIAL.zip?ts=gAAAAABh8v-PiNjQxcxANpez7NVw9_uMMmeB-y12r1uQpE34MTM8mohKDhXXLMMMdxZWqc8w3cjJtxeEPYfjq2cBBRcyfUfWIg%3D%3D&use_mirror=telkomuniversity&r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fproject-elixir%2Ffiles%2Ftwelve%2Fwhyred%2F'
+        default: 'https://downloads.sourceforge.net/project/project-arcana-releases/AGHANIMS/PINE/ArcanaOS_PINE-AGHANIMS-OFFICIAL-20211107-0942.zip?ts=gAAAAABh8weEhKR25n5mavVdEqfgmISf1pNHJyUUc760EWQuhXmYEu8xf2v3qfIi6osBhcC2TISkdRTJz6l-bFeQ4pn_muFR1Q%3D%3D&use_mirror=phoenixnap&r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fproject-arcana-releases%2Ffiles%2FAGHANIMS%2FPINE%2F'
       ZIP_NAME:
         description: 'ZIP_NAME'
         required: true
-        default: 'ProjectElixir_1.2_whyred-12.0-20211229-1811.zip'
+        default: 'ProjectArcana_Pine-12.0-20211229-1811.zip'
       OS_TYPE:
         description: 'OS_TYPE'
         required: true
@@ -22,7 +22,7 @@ on:
 
 env: 
   DIR : ProjectElixir
-  REPACK_NAME : ProjectElixir-test-RK137SGSI
+  REPACK_NAME : ProjectArcana-Pine-test-RK137SGSI
 
 jobs:
   build:
