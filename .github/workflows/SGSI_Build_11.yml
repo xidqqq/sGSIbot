@@ -3,14 +3,14 @@ name: SGSI_Build_11
 on:
   workflow_dispatch:
     inputs:
-      ROM_URL:
+      ROM_URL: 
         description: 'ROM_URL'
         required: true
-        default: 'https://rehans.harshtutorialdrive.workers.dev/0://Corvus_v17.0-Vanguard-sanders-31102021-Official-1609.zip'
+        default: ' https://downloads.sourceforge.net/project/project-elixir/twelve/whyred/ProjectElixir_1.2_whyred-12.0-20211229-1811-OFFICIAL.zip?ts=gAAAAABh8v-PiNjQxcxANpez7NVw9_uMMmeB-y12r1uQpE34MTM8mohKDhXXLMMMdxZWqc8w3cjJtxeEPYfjq2cBBRcyfUfWIg%3D%3D&use_mirror=telkomuniversity&r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fproject-elixir%2Ffiles%2Ftwelve%2Fwhyred%2F'
       ZIP_NAME:
         description: 'ZIP_NAME'
         required: true
-        default: 'update.zip'
+        default: 'ProjectElixir_1.2_whyred-12.0-20211229-1811.zip'
       OS_TYPE:
         description: 'OS_TYPE'
         required: true
@@ -21,8 +21,8 @@ on:
         default: 'AB'
 
 env: 
-  DIR : Corvus-t
-  REPACK_NAME : Corvus-test-RK137SGSI
+  DIR : ProjectElixir
+  REPACK_NAME : ProjectElixir-test-RK137SGSI
 
 jobs:
   build:
